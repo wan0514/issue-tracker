@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { setAccessToken } from '@/features/auth/utils/tokens';
 
 export default function AuthCallbackPage() {
   const navigate = useNavigate();
@@ -10,8 +11,7 @@ export default function AuthCallbackPage() {
     const tokenType = hashParams.get('token_type');
 
     if (token && tokenType) {
-      localStorage.setItem('accessToken', token);
-      localStorage.setItem('tokenType', tokenType);
+      setAccessToken(token, tokenType);
 
       window.history.replaceState(null, '', '/');
       navigate('/');

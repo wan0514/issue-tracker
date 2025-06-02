@@ -1,14 +1,14 @@
 import {
   isAccessTokenStillValid,
   removeAccessToken,
+  getAccessTokenPair,
 } from '@/features/auth/utils/tokens';
 
 export default async function fetchWithAuth(
   input: RequestInfo,
   init?: RequestInit,
 ) {
-  const token = localStorage.getItem('accessToken');
-  const tokenType = localStorage.getItem('tokenType');
+  const { token, tokenType } = getAccessTokenPair();
 
   if (!token || !isAccessTokenStillValid()) {
     removeAccessToken();

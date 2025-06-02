@@ -1,6 +1,6 @@
-const TOKEN_KEY = 'accessToken';
-const TOKEN_TYPE_KEY = 'tokenType';
-const ISSUED_AT_KEY = 'accessTokenIssuedAt';
+const TOKEN_KEY = 'access_token';
+const TOKEN_TYPE_KEY = 'token_type';
+const ISSUED_AT_KEY = 'access_token_issued_at';
 const TOKEN_LIFETIME = 30 * 60 * 1000; // 30분(ms)
 
 export function setAccessToken(token: string, tokenType: string) {
@@ -11,8 +11,14 @@ export function setAccessToken(token: string, tokenType: string) {
   setupAutoLogout();
 }
 
-export function getAccessToken(): string | null {
-  return localStorage.getItem(TOKEN_KEY);
+export function getAccessTokenPair(): {
+  token: string | null;
+  tokenType: string | null;
+} {
+  return {
+    token: localStorage.getItem(TOKEN_KEY),
+    tokenType: localStorage.getItem(TOKEN_TYPE_KEY),
+  };
 }
 
 export function removeAccessToken() {
