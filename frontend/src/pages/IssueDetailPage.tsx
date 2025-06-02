@@ -6,6 +6,8 @@ import useIssueMilestone from '@/features/issue/hooks/useIssueMilestone';
 import useIssueDetail from '@/features/issue/hooks/useIssueDetail';
 import useIssueComments from '@/features/issue/hooks/useIssueComments';
 import usePatchIssueState from '@/features/issue/hooks/usePatchIssueState';
+import { useCurrentUser } from '@/features/auth/hooks/useCurrentUser';
+
 import Divider from '@/shared/components/Divider';
 import IssueHeader from '@/features/issue/components/detail/IssueHeader';
 import IssueMainSection from '@/features/issue/components/detail/IssueMainSection';
@@ -16,6 +18,8 @@ import VerticalStack from '@/layouts/VerticalStack';
 export default function IssueDetailPage() {
   const { id } = useParams();
   const issueId = Number(id);
+  const currentUser = useCurrentUser();
+
   const { mutate: toggleIssueState, isPending: isToggleLoading } =
     usePatchIssueState(issueId);
 
@@ -81,6 +85,8 @@ export default function IssueDetailPage() {
   const selectedLabelIds = issueLabels.map(label => label.id);
   const selectedMilestoneId = issueMilestone?.id ?? null;
 
+  const isAuthor = currentUser?.nickname === issueDetail.author.nickname;
+
   return (
     <VerticalStack>
       <IssueHeader
@@ -107,7 +113,7 @@ export default function IssueDetailPage() {
             selectedMilestoneId={selectedMilestoneId}
             onSelectMilestone={() => {}}
           />
-          <IssueDeleteButton issueId={issueId} />
+          {isAuthor && <IssueDeleteButton issueId={issueId} />}
         </SideSection>
       </MainArea>
     </VerticalStack>
