@@ -1,7 +1,7 @@
-const TOKEN_KEY = 'access_token';
-const TOKEN_TYPE_KEY = 'token_type';
-const ISSUED_AT_KEY = 'access_token_issued_at';
-const TOKEN_LIFETIME = 30 * 60 * 1000; // 30분(ms)
+export const TOKEN_KEY = 'access_token';
+export const TOKEN_TYPE_KEY = 'token_type';
+export const ISSUED_AT_KEY = 'access_token_issued_at';
+export const TOKEN_LIFETIME = 30 * 60 * 1000; // 30분(ms)
 
 export function setAccessToken(token: string, tokenType: string) {
   localStorage.setItem(TOKEN_KEY, token);
