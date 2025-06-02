@@ -1,9 +1,20 @@
+import {
+  isAccessTokenStillValid,
+  removeAccessToken,
+} from '@/features/auth/utils/tokens';
+
 export default async function fetchWithAuth(
   input: RequestInfo,
   init?: RequestInit,
 ) {
   const token = localStorage.getItem('accessToken');
   const tokenType = localStorage.getItem('tokenType');
+
+  if (!token || !isAccessTokenStillValid()) {
+    removeAccessToken();
+    window.location.href = '/login'; // 토큰 만료 시 강제 이동
+    return Promise.reject(new Error('Token expired'));
+  }
 
   const headers = {
     ...init?.headers,
