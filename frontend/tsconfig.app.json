@@ -31,5 +31,5 @@
       "@/*": ["src/*"]
     }
   },
-  "include": ["src", "**/*.d.ts", "src/**/*.test.ts", "src/**/*.test.tsx"]
+  "include": ["src", "test", "**/*.d.ts", "src/**/*.test.ts", "src/**/*.test.tsx"]
 }
