@@ -1,6 +1,5 @@
 import { useParams } from 'react-router-dom';
 import styled from '@emotion/styled';
-import TrashIcon from '@/assets/icons/trash.svg?react';
 import useIssueAssignees from '@/features/issue/hooks/useIssueAssignees';
 import useIssueLabels from '@/features/issue/hooks/useIssueLabels';
 import useIssueMilestone from '@/features/issue/hooks/useIssueMilestone';
@@ -11,6 +10,7 @@ import Divider from '@/shared/components/Divider';
 import IssueHeader from '@/features/issue/components/detail/IssueHeader';
 import IssueMainSection from '@/features/issue/components/detail/IssueMainSection';
 import IssueSidebar from '@/shared/components/sidebar';
+import IssueDeleteButton from '@/features/issue/components/detail/IssueDeleteButton';
 import VerticalStack from '@/layouts/VerticalStack';
 
 export default function IssueDetailPage() {
@@ -107,7 +107,7 @@ export default function IssueDetailPage() {
             selectedMilestoneId={selectedMilestoneId}
             onSelectMilestone={() => {}}
           />
-          <TabItem icon={<TrashIcon />} label="이슈 삭제" />
+          <IssueDeleteButton issueId={issueId} />
         </SideSection>
       </MainArea>
     </VerticalStack>
@@ -125,50 +125,4 @@ const SideSection = styled.div`
   flex-direction: column;
   align-items: flex-end;
   gap: 16px;
-`;
-
-interface TabItemProps {
-  icon: React.ReactNode;
-  label: string;
-}
-
-// TODO 공용으로 분리 및 onClick 추가
-function TabItem({ icon, label }: TabItemProps) {
-  return (
-    <TabButton>
-      <IconWrapper>{icon}</IconWrapper>
-      <Label>{label}</Label>
-    </TabButton>
-  );
-}
-
-const TabButton = styled.button<{ active?: boolean }>`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 8px 0;
-  margin-right: 16px;
-  color: ${({ theme }) => theme.danger.text.default};
-  ${({ theme }) => theme.typography.availableMedium12};
-
-  cursor: pointer;
-
-  &:hover {
-    opacity: 0.8;
-  }
-`;
-
-const IconWrapper = styled.span`
-  display: flex;
-  align-items: center;
-  color: inherit;
-
-  svg {
-    width: 16px;
-    height: 16px;
-  }
-`;
-
-const Label = styled.span`
-  color: inherit;
 `;
