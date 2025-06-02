@@ -1,5 +1,6 @@
 import { type User } from '@/features/user/types';
 import { API } from '@/shared/constants/api';
+import fetchWithAuth from '@/shared/utils/fetchWithAuth';
 
 export interface GetIssueAssigneesResponse {
   assignees: User[];
@@ -8,10 +9,7 @@ export interface GetIssueAssigneesResponse {
 export async function getIssueAssignees(
   issueId: number,
 ): Promise<GetIssueAssigneesResponse> {
-  const res = await fetch(API.ISSUE_ASSIGNEES(issueId), {
-    method: 'GET',
-    // credentials: 'include',
-  });
+  const res = await fetchWithAuth(API.ISSUE_ASSIGNEES(issueId));
 
   const statusCodeHandler: Record<
     number,

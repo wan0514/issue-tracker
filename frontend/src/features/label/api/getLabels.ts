@@ -1,8 +1,9 @@
 import { API } from '@/shared/constants/api';
 import { type GetLabelsResponse } from '@/features/label/types';
+import fetchWithAuth from '@/shared/utils/fetchWithAuth';
 
 export default async function getLabels(): Promise<GetLabelsResponse> {
-  const res = await fetch(`${API.LABELS}`);
+  const res = await fetchWithAuth(`${API.LABELS}`);
 
   const statusCodeHandler: Record<number, () => Promise<GetLabelsResponse>> = {
     200: async () => await res.json(),

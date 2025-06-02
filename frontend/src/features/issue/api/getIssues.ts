@@ -1,13 +1,12 @@
 import { API } from '@/shared/constants/api';
 import { type IssuesResponse } from '@/features/issue/types/issue';
+import fetchWithAuth from '@/shared/utils/fetchWithAuth';
 
 export async function getIssues(filterQuery: string): Promise<IssuesResponse> {
   const url = new URL(API.ISSUES, window.location.origin);
   url.searchParams.set('q', filterQuery);
 
-  const res = await fetch(url.toString(), {
-    credentials: 'include',
-  });
+  const res = await fetchWithAuth(url.toString());
 
   const statusCodeHandler: Record<number, () => Promise<IssuesResponse>> = {
     200: async () => await res.json(),

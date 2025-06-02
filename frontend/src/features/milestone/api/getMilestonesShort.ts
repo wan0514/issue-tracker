@@ -1,8 +1,9 @@
 import { API } from '@/shared/constants/api';
 import { type GetMilestonesShortResponse } from '@/features/milestone/types';
+import fetchWithAuth from '@/shared/utils/fetchWithAuth';
 
 export default async function getMilestonesShort(): Promise<GetMilestonesShortResponse> {
-  const res = await fetch(`${API.MILESTONES_SHORT}`);
+  const res = await fetchWithAuth(`${API.MILESTONES_SHORT}`);
 
   const statusCodeHandler: Record<
     number,

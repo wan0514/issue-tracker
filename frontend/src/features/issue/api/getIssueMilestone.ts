@@ -1,13 +1,11 @@
 import { API } from '@/shared/constants/api';
 import { type MilestoneDetail } from '@/features/milestone/types';
+import fetchWithAuth from '@/shared/utils/fetchWithAuth';
 
 export async function getIssueMilestone(
   issueId: number,
 ): Promise<MilestoneDetail | null> {
-  const res = await fetch(API.ISSUE_MILESTONE(issueId), {
-    method: 'GET',
-    // credentials: 'include',
-  });
+  const res = await fetchWithAuth(API.ISSUE_MILESTONE(issueId));
 
   const statusCodeHandler: Record<
     number,

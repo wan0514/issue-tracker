@@ -3,11 +3,12 @@ import type {
   NewIssuePayload,
   PostNewIssueResponse,
 } from '@/features/newIssue/types';
+import fetchWithAuth from '@/shared/utils/fetchWithAuth';
 
 export const postNewIssue = async (
   payload: NewIssuePayload,
 ): Promise<PostNewIssueResponse> => {
-  const response = await fetch(`${API.POST_ISSUE}`, {
+  const response = await fetchWithAuth(`${API.POST_ISSUE}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

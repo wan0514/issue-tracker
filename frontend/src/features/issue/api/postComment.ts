@@ -1,14 +1,14 @@
 import { API } from '@/shared/constants/api';
+import fetchWithAuth from '@/shared/utils/fetchWithAuth';
 
 export default async function postComment(
   issueId: number,
   content: string,
 ): Promise<void> {
-  const response = await fetch(`${API.ISSUES}/${issueId}/comments`, {
+  const response = await fetchWithAuth(`${API.ISSUES}/${issueId}/comments`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      // 추후 로그인 기능이 들어가면  토큰 설정 필요
     },
     body: JSON.stringify({ content }),
   });

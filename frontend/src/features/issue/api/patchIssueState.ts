@@ -1,4 +1,5 @@
 import { API } from '@/shared/constants/api';
+import fetchWithAuth from '@/shared/utils/fetchWithAuth';
 
 interface PatchIssueStateParams {
   issueId: number;
@@ -9,12 +10,11 @@ export default async function patchIssueState({
   issueId,
   targetClosed,
 }: PatchIssueStateParams): Promise<void> {
-  const response = await fetch(API.ISSUE_STATE(issueId), {
+  const response = await fetchWithAuth(API.ISSUE_STATE(issueId), {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
     },
-    // credentials: 'include',
     body: JSON.stringify({ targetClosed }),
   });
 

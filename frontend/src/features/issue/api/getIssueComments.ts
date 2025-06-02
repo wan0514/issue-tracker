@@ -1,10 +1,11 @@
 import { API } from '@/shared/constants/api';
 import { type CommentsResponse } from '@/features/issue/types/issue';
+import fetchWithAuth from '@/shared/utils/fetchWithAuth';
 
 export default async function getIssueComments(
   issueId: number,
 ): Promise<CommentsResponse> {
-  const res = await fetch(`${API.ISSUES}/${issueId}/comments`);
+  const res = await fetchWithAuth(`${API.ISSUES}/${issueId}/comments`);
 
   const statusCodeHandler: Record<number, () => Promise<CommentsResponse>> = {
     200: async () => await res.json(),

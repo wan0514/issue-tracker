@@ -1,5 +1,6 @@
 import { API } from '@/shared/constants/api';
 import { type Label } from '@/features/label/types';
+import fetchWithAuth from '@/shared/utils/fetchWithAuth';
 
 interface GetIssueLabelsResponse {
   labels: Label[];
@@ -8,10 +9,7 @@ interface GetIssueLabelsResponse {
 export async function getIssueLabels(
   issueId: number,
 ): Promise<GetIssueLabelsResponse> {
-  const res = await fetch(API.ISSUE_LABELS(issueId), {
-    method: 'GET',
-    // credentials: 'include', // 필요 시 주석 해제
-  });
+  const res = await fetchWithAuth(API.ISSUE_LABELS(issueId));
 
   const statusCodeHandler: Record<
     number,

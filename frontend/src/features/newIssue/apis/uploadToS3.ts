@@ -1,7 +1,8 @@
 import { API } from '@/shared/constants/api';
+import fetchWithAuth from '@/shared/utils/fetchWithAuth';
 
 export default async function uploadToS3(file: File): Promise<string> {
-  const res = await fetch(
+  const res = await fetchWithAuth(
     `${API.S3_PRESIGNED_URL}?filename=${file.name}&Content-Type=${encodeURIComponent(file.type)}`,
   );
 

@@ -1,8 +1,9 @@
 import { API } from '@/shared/constants/api';
 import { type GetUsersResponse } from '@/features/user/types';
+import fetchWithAuth from '@/shared/utils/fetchWithAuth';
 
 export default async function getUsers(): Promise<GetUsersResponse> {
-  const res = await fetch(`${API.USERS}`);
+  const res = await fetchWithAuth(`${API.USERS}`);
 
   const statusCodeHandler: Record<number, () => Promise<GetUsersResponse>> = {
     200: async () => await res.json(),

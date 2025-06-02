@@ -1,10 +1,11 @@
 import { API } from '@/shared/constants/api';
 import { type IssueDetailResponse } from '@/features/issue/types/issue';
+import fetchWithAuth from '@/shared/utils/fetchWithAuth';
 
 export default async function getIssueDetail(
   issueId: number,
 ): Promise<IssueDetailResponse> {
-  const res = await fetch(`${API.ISSUES}/${issueId}`);
+  const res = await fetchWithAuth(`${API.ISSUES}/${issueId}`);
 
   const statusCodeHandler: Record<number, () => Promise<IssueDetailResponse>> =
     {
