@@ -17,4 +17,6 @@ export const API = {
   MILESTONES_SHORT: `${API_BASE_URL}/milestones/short`,
   USERS: `${API_BASE_URL}/users`,
   S3_PRESIGNED_URL: '/api/s3/presigned-url',
+
+  OAUTH_LOGIN: `${API_BASE_URL}/auth/oauth/github`,
 };
