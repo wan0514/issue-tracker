@@ -1,8 +1,10 @@
 import { postNewIssue } from '@/features/newIssue/apis/postNewIssue';
-import { fetchMocker } from '@/setupTests';
+import { fetchMocker } from '@/test/setupTests';
+import mockValidAccessToken from '@/test/utils/mockValidAccessToken';
 
 describe('postNewIssue', () => {
   beforeEach(() => {
+    mockValidAccessToken();
     fetchMocker.resetMocks();
   });
 

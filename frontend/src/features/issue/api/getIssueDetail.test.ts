@@ -1,7 +1,13 @@
 import getIssueDetail from '@/features/issue/api/getIssueDetail';
-import { fetchMocker } from '@/setupTests';
+import { fetchMocker } from '@/test/setupTests';
+import mockValidAccessToken from '@/test/utils/mockValidAccessToken';
 
 describe('getIssueDetail', () => {
+  beforeEach(() => {
+    mockValidAccessToken();
+    fetchMocker.resetMocks();
+  });
+
   it('should return issue detail when response is 200', async () => {
     const mockData = { id: 1, title: 'Test Issue' };
     fetchMocker.mockResponseOnce(JSON.stringify(mockData));

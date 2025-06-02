@@ -1,8 +1,10 @@
-import { fetchMocker } from '@/setupTests';
+import { fetchMocker } from '@/test/setupTests';
 import getIssueComments from '@/features/issue/api/getIssueComments';
+import mockValidAccessToken from '@/test/utils/mockValidAccessToken';
 
 describe('getIssueComments', () => {
   beforeEach(() => {
+    mockValidAccessToken();
     fetchMocker.resetMocks();
   });
 
