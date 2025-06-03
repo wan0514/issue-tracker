@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { useState } from 'react';
 import CommentInputSection from '@/features/newIssue/components/CommentInputSection';
 import TitleInput from '@/features/newIssue/components/TitleInput';
 
@@ -16,14 +17,22 @@ export default function NewIssueForm({
   onTitleChange,
   onContentChange,
 }: NewIssueFormProps) {
+  const [isFocused, setIsFocused] = useState(false);
+
   return (
     <FormSection>
       <TitleInput value={title} onChange={onTitleChange} label="제목" />
-      <CommentInputSection
-        value={content}
-        onChange={onContentChange}
-        initialHeight={448}
-      />
+
+      <CommentInputWrapper isFocused={isFocused}>
+        <CommentInputSection
+          value={content}
+          onChange={onContentChange}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          isFocused={isFocused}
+          initialHeight={448}
+        />
+      </CommentInputWrapper>
     </FormSection>
   );
 }
@@ -33,4 +42,20 @@ const FormSection = styled.section`
   display: flex;
   flex-direction: column;
   gap: 16px;
+`;
+
+const CommentInputWrapper = styled.section<{ isFocused: boolean }>`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  border-radius: ${({ theme }) => theme.radius.medium};
+  overflow: hidden;
+
+  background-color: ${({ isFocused, theme }) =>
+    isFocused ? theme.neutral.surface.default : theme.neutral.surface.bold};
+
+  box-shadow: ${({ isFocused, theme }) =>
+    isFocused ? `0 0 0 1px ${theme.neutral.border.active}` : 'none'};
 `;

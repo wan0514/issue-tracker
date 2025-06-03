@@ -10,6 +10,9 @@ const DEFAULT_HEIGTH = 80;
 interface CommentInputSectionProps {
   value: string;
   onChange: (value: string | ((prev: string) => string)) => void;
+  isFocused: boolean;
+  onFocus: () => void;
+  onBlur: () => void;
   initialHeight?: number;
   maxHeight?: number;
 }
@@ -17,10 +20,12 @@ interface CommentInputSectionProps {
 export default function CommentInputSection({
   value,
   onChange,
+  isFocused,
+  onFocus,
+  onBlur,
   initialHeight = DEFAULT_HEIGTH,
   maxHeight,
 }: CommentInputSectionProps) {
-  const [isFocused, setIsFocused] = useState(false);
   const [showCharCount, setShowCharCount] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -84,7 +89,7 @@ export default function CommentInputSection({
   }, [value]);
 
   return (
-    <EditorContainer isFocused={isFocused}>
+    <EditorContainer>
       <LabelAbove isFloating={isFocused || !!value}>
         코멘트를 입력하세요
       </LabelAbove>
@@ -92,8 +97,8 @@ export default function CommentInputSection({
         ref={textareaRef}
         value={value}
         onChange={e => onChange(e.target.value)}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
+        onFocus={onFocus}
+        onBlur={onBlur}
         initialHeight={initialHeight}
         maxHeight={maxHeight}
       />
@@ -109,21 +114,13 @@ export default function CommentInputSection({
   );
 }
 
-const EditorContainer = styled.section<{ isFocused: boolean }>`
+const EditorContainer = styled.section`
   position: relative;
   height: auto;
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  border-radius: ${({ theme }) => theme.radius.medium};
-  overflow: hidden;
-
-  background-color: ${({ isFocused, theme }) =>
-    isFocused ? theme.neutral.surface.default : theme.neutral.surface.bold};
-
-  box-shadow: ${({ isFocused, theme }) =>
-    isFocused ? `0 0 0 1px ${theme.neutral.border.active}` : 'none'};
 `;
 
 const ContentTextarea = styled.textarea<{
