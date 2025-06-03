@@ -10,12 +10,14 @@ interface DescriptionHeaderProps {
   author: User;
   createdAt: string;
   isAuthor: boolean;
+  onEditClick: () => void;
 }
 
 export default function DescriptionHeader({
   author,
   createdAt,
   isAuthor = false,
+  onEditClick,
 }: DescriptionHeaderProps) {
   const { id, nickname, profileImage } = author;
   return (
@@ -27,16 +29,16 @@ export default function DescriptionHeader({
 
       <RightSection>
         {isAuthor && <AuthorTag>작성자</AuthorTag>}
-        <Button
-          variant="ghost"
-          size="small"
-          icon={<EditIcon />}
-          onClick={() => {
-            /* 편집 로직 */
-          }}
-        >
-          편집
-        </Button>
+        {isAuthor && (
+          <Button
+            variant="ghost"
+            size="small"
+            icon={<EditIcon />}
+            onClick={onEditClick}
+          >
+            편집
+          </Button>
+        )}
 
         <Button
           variant="ghost"
