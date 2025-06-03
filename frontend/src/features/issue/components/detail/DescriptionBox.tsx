@@ -28,6 +28,8 @@ export default function DescriptionBox({
 
   const isAuthor = currentUser?.nickname === author.nickname;
 
+  const isUnchanged = description.trim() === (content?.trim() ?? '');
+
   const handleSubmit = () => {
     onSubmit(description);
     setIsEditing(false);
@@ -64,7 +66,7 @@ export default function DescriptionBox({
         <CommentEditActionButtons
           onCancel={handleCancel}
           onSubmit={handleSubmit}
-          isSubmitDisabled={!description.trim()}
+          isSubmitDisabled={isUnchanged}
         />
       )}
     </>
