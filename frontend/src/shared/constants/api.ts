@@ -9,6 +9,8 @@ export const API = {
   ISSUE_LABELS: (id: number) => `${API_BASE_URL}/issues/${id}/labels`,
   ISSUE_ASSIGNEES: (id: number) => `${API_BASE_URL}/issues/${id}/assignees`,
   ISSUE_MILESTONE: (id: number) => `${API_BASE_URL}/issues/${id}/milestone`,
+  ISSUE_COMMENT: (issueId: number, commentId: number) =>
+    `${API_BASE_URL}/issues/${issueId}/comments/${commentId}`,
 
   ISSUE_STATE: (id: number) => `${API_BASE_URL}/issues/${id}/state`,
 
