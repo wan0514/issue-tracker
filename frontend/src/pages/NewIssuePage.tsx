@@ -28,44 +28,11 @@ export default function NewIssuePage() {
     postNewIssue(payload);
   }
 
-  function handleTitleChange(val: string) {
-    updateIssueForm({ type: 'SET_TITLE', payload: val });
-  }
-
-  function handleContentChange(val: string | ((prev: string) => string)) {
-    updateIssueForm({ type: 'SET_CONTENT', payload: val });
-  }
-  function handleMilestoneChange(id: number) {
-    updateIssueForm({
-      type: 'SET_MILESTONE',
-      payload: issueForm.milestone === id ? null : id,
-    });
-  }
-
-  function handleToggleLabel(id: number) {
-    updateIssueForm({ type: 'TOGGLE_LABEL', payload: id });
-  }
-
-  function handleToggleAssignee(id: number) {
-    updateIssueForm({ type: 'TOGGLE_ASSIGNEE', payload: id });
-  }
-
   return (
     <VerticalStack>
       <NewIssueHeader />
       <Divider />
-      <NewIssueFormSection
-        title={issueForm.title}
-        onTitleChange={handleTitleChange}
-        content={issueForm.content}
-        onContentChange={handleContentChange}
-        milestoneId={issueForm.milestone}
-        onMilestoneChange={handleMilestoneChange}
-        selectedLabelIds={issueForm.labels}
-        onToggleLabel={handleToggleLabel}
-        selectedAssigneeIds={issueForm.assignees}
-        onToggleAssignee={handleToggleAssignee}
-      />
+      <NewIssueFormSection state={issueForm} dispatch={updateIssueForm} />
       <Divider />
       <NewIssueActionButtons
         isSubmitDisabled={isTitleEmpty(issueForm.title)}

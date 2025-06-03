@@ -13,6 +13,8 @@ export const API = {
     `${API_BASE_URL}/issues/${issueId}/comments/${commentId}`,
 
   ISSUE_STATE: (id: number) => `${API_BASE_URL}/issues/${id}/state`,
+  ISSUE_CONTENT: (id: number) => `${API_BASE_URL}/issues/${id}/content`,
+  ISSUE_TITLE: (id: number) => `${API_BASE_URL}/issues/${id}/title`,
 
   LABELS: `${API_BASE_URL}/labels`,
   MILESTONES: `${API_BASE_URL}/milestones`,

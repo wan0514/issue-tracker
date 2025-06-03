@@ -1,11 +1,33 @@
-import DescriptionBox, {
-  type DescriptionBoxProps,
-} from '@/features/issue/components/detail/DescriptionBox';
+import { useParams } from 'react-router-dom';
+import { usePatchIssueContent } from '@/features/issue/hooks/usePatchIssueContent';
+import DescriptionBox from '@/features/issue/components/detail/DescriptionBox';
+import { type CommentAuthor } from '@/features/issue/types/issue';
 
-export default function IssueDescription(props: DescriptionBoxProps) {
+interface IssueDescriptionProps {
+  content: string | null;
+  author: CommentAuthor;
+  createdAt: string;
+}
+
+export default function IssueDescription({
+  content,
+  author,
+  createdAt,
+}: IssueDescriptionProps) {
+  const { id } = useParams();
+  const issueId = Number(id);
+  const { mutate } = usePatchIssueContent(issueId);
+
   const handleSubmit = (description: string) => {
-    // TODO 이슈 description 편집 로직
+    mutate({ issueId, content: description });
   };
 
-  return <DescriptionBox {...props} onSubmit={handleSubmit} />;
+  return (
+    <DescriptionBox
+      content={content}
+      author={author}
+      createdAt={createdAt}
+      onSubmit={handleSubmit}
+    />
+  );
 }

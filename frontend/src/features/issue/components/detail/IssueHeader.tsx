@@ -1,13 +1,14 @@
+import { useState } from 'react';
 import styled from '@emotion/styled';
-import { formatCreatedMessage } from '@/features/issue/utils';
-import ClosedIcon from '@/assets/icons/archive.svg?react';
-import EditIcon from '@/assets/icons/edit.svg?react';
-import AlertCircleIcon from '@/assets/icons/alertCircle.svg?react';
-import Button from '@/shared/components/Button';
+import usePatchIssueTitle from '@/features/issue/hooks/usePatchIssueTitle';
+import usePatchIssueState from '@/features/issue/hooks/usePatchIssueState';
+import IssueMeta from './IssueMeta';
+import IssueHeaderActions from './IssueHeaderActions';
+import TextInput from '@/shared/components/TextInput';
 
 interface IssueHeaderProps {
   isClosed: boolean;
-  issueNumber: number;
+  issueId: number;
   title: string;
   author: {
     id: number;
@@ -16,134 +17,110 @@ interface IssueHeaderProps {
   };
   createdAt: string;
   commentCount: number;
-  onToggleIssueState: () => void;
 }
 
-//TODO 편집 기능, 이슈 열림 토글 기능 추가시 prop도 추가
 export default function IssueHeader({
   isClosed,
-  issueNumber,
+  issueId,
   title,
   author,
   createdAt,
   commentCount,
-  onToggleIssueState,
 }: IssueHeaderProps) {
+  const { mutate: patchTitle } = usePatchIssueTitle(issueId);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedTitle, setEditedTitle] = useState(title);
+
+  const isSubmitDisabled = editedTitle.trim() === title.trim();
+
+  const { mutate: toggleIssueState, isPending: isToggleLoading } =
+    usePatchIssueState(issueId);
+
+  const handleToggle = () => {
+    if (isToggleLoading) return;
+    toggleIssueState({ issueId, targetClosed: !isClosed });
+  };
+
+  const handleSubmitEdit = () => {
+    patchTitle(editedTitle);
+    setIsEditing(false);
+  };
+
+  const handleCancelEdit = () => {
+    setEditedTitle(title);
+    setIsEditing(false);
+  };
+
   return (
     <HeaderWrapper>
-      <LeftSection>
-        <Title>
-          {title} <IssueNumber>#{issueNumber}</IssueNumber>
-        </Title>
-        <IssueMetaWrapper>
-          <IsClosedButton isClosed={isClosed}>
-            <AlertCircleIcon />
-            <StateBadge>{isClosed ? '닫힌 이슈' : '열린 이슈'}</StateBadge>
-          </IsClosedButton>
-          <MetaInfo>
-            {formatCreatedMessage({
-              createdAt,
-              author: author.nickname,
-              isClosed,
-            })}
-          </MetaInfo>
-          <CommentCount>코멘트 {commentCount}개</CommentCount>
-        </IssueMetaWrapper>
-      </LeftSection>
-      <RightSection>
-        <Button
-          variant="outline"
-          size="small"
-          icon={<EditIcon />}
-          onClick={() => {
-            /* 편집 로직 */
-          }}
-        >
-          제목 편집
-        </Button>
-        <Button
-          variant="outline"
-          size="small"
-          icon={<ClosedIcon />}
-          onClick={onToggleIssueState}
-        >
-          {isClosed ? '이슈 열기' : '이슈 닫기'}
-        </Button>
-      </RightSection>
+      <TopRow>
+        {isEditing ? (
+          <TextInput
+            label="제목"
+            value={editedTitle}
+            onChange={e => setEditedTitle(e.target.value)}
+            placeholder="이슈의 제목을 입력해주세요"
+          />
+        ) : (
+          <Title>
+            <TitleText>{title}</TitleText>
+            <IssueNumber>#{issueId}</IssueNumber>
+          </Title>
+        )}
+
+        <IssueHeaderActions
+          isEditing={isEditing}
+          onEditStart={() => setIsEditing(true)}
+          onEditCancel={handleCancelEdit}
+          onEditSubmit={handleSubmitEdit}
+          isClosed={isClosed}
+          onToggleIssueState={handleToggle}
+          isSubmitDisabled={isSubmitDisabled}
+        />
+      </TopRow>
+
+      <IssueMeta
+        isClosed={isClosed}
+        createdAt={createdAt}
+        authorName={author.nickname}
+        commentCount={commentCount}
+      />
     </HeaderWrapper>
   );
 }
 
 const HeaderWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
-`;
-
-const LeftSection = styled.div`
-  display: flex;
   flex-direction: column;
   gap: 16px;
 `;
 
-const IssueMetaWrapper = styled.div`
+const TopRow = styled.div`
   display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-`;
-
-const RightSection = styled.div`
-  display: flex;
+  justify-content: space-between;
   align-items: center;
   gap: 16px;
-  height: 48px;
+  min-height: 48px;
 `;
 
 const Title = styled.h1`
-  display: flex;
-  align-items: flex-start;
+  display: inline;
+  flex-wrap: wrap;
   gap: 8px;
 
   color: ${({ theme }) => theme.neutral.text.strong};
   ${({ theme }) => theme.typography.displayBold32};
 `;
 
+const TitleText = styled.span`
+  flex: 1;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  margin-right: 8px;
+`;
+
 const IssueNumber = styled.span`
+  align-self: flex-start;
   color: ${({ theme }) => theme.neutral.text.weak};
-`;
-
-const MetaInfo = styled.span`
-  color: ${({ theme }) => theme.neutral.text.weak};
-  ${({ theme }) => theme.typography.displayMedium16};
-`;
-
-const CommentCount = styled.span`
-  margin-left: 24px;
-  color: ${({ theme }) => theme.neutral.text.weak};
-  ${({ theme }) => theme.typography.displayMedium16};
-`;
-
-const IsClosedButton = styled.button<{ isClosed: boolean }>`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 8px 16px;
-  background-color: ${({ theme, isClosed }) =>
-    isClosed ? theme.palette.navy : theme.palette.blue};
-
-  border-radius: ${({ theme }) => theme.radius.large};
-  color: ${({ theme }) => theme.brand.text.default};
-
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    opacity: 0.8;
-  }
-`;
-
-const StateBadge = styled.span`
-  padding: 0 4px;
-  color: ${({ theme }) => theme.brand.text.default};
-  ${({ theme }) => theme.typography.displayMedium12};
+  white-space: nowrap;
 `;

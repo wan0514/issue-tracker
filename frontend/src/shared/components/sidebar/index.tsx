@@ -4,39 +4,36 @@ import LabelSection from '@/shared/components/sidebar/LabelSection';
 import MilestoneSection from '@/shared/components/sidebar/MilestoneSection';
 
 interface IssueSidebarProps {
-  selectedAssigneeIds: number[];
-  onToggleAssignee: (id: number) => void;
+  initialAssigneeIds: number[];
+  onSaveAssignee: (ids: number[]) => void;
 
-  selectedLabelIds: number[];
-  onToggleLabel: (id: number) => void;
+  initialLabelIds: number[];
+  onSaveLabel: (ids: number[]) => void;
 
-  selectedMilestoneId: number | null;
-  onSelectMilestone: (id: number) => void;
+  initialMilestoneId: number | null;
+  onSaveMilestone: (id: number | null) => void;
 }
 
 export default function IssueSidebar({
-  selectedAssigneeIds,
-  onToggleAssignee,
-  selectedLabelIds,
-  onToggleLabel,
-  selectedMilestoneId,
-  onSelectMilestone,
+  initialAssigneeIds,
+  onSaveAssignee,
+  initialLabelIds,
+  onSaveLabel,
+  initialMilestoneId,
+  onSaveMilestone,
 }: IssueSidebarProps) {
   return (
     <SidebarWrapper>
       <AssigneeSection
-        selectedAssigneeIds={selectedAssigneeIds}
-        onToggleAssignee={onToggleAssignee}
+        initialSelectedIds={initialAssigneeIds}
+        onSave={onSaveAssignee}
       />
 
-      <LabelSection
-        selectedLabelIds={selectedLabelIds}
-        onToggleLabel={onToggleLabel}
-      />
+      <LabelSection initialSelectedIds={initialLabelIds} onSave={onSaveLabel} />
 
       <MilestoneSection
-        selectedMilestoneId={selectedMilestoneId}
-        onSelectMilestone={onSelectMilestone}
+        initialSelectedId={initialMilestoneId}
+        onSave={onSaveMilestone}
       />
     </SidebarWrapper>
   );

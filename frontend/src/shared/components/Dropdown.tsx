@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import DropdownIndicator from '@/shared/components/DropdownIndicator';
@@ -6,19 +6,25 @@ import DropdownPortal from '@/shared/components/DropdownPortal';
 
 interface DropdownProps {
   label: string;
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
   children: React.ReactNode;
 }
 
-export default function Dropdown({ label, children }: DropdownProps) {
-  const [open, setOpen] = useState(false);
+export default function Dropdown({
+  label,
+  isOpen,
+  setIsOpen,
+  children,
+}: DropdownProps) {
   const triggerRef = useRef<HTMLButtonElement>(null);
 
   return (
     <Wrapper>
-      <Trigger onClick={() => setOpen(prev => !prev)}>
+      <Trigger onClick={() => setIsOpen(!isOpen)}>
         <DropdownIndicator label={label} ref={triggerRef} />
       </Trigger>
-      {open && (
+      {isOpen && (
         <DropdownPortal anchorRef={triggerRef}>
           <Panel>
             <PanelTitle>{label}</PanelTitle>

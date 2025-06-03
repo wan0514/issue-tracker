@@ -54,3 +54,8 @@ export interface Comment {
 export interface CommentsResponse {
   comments: Comment[];
 }
+
+export interface PatchIssueContentParams {
+  issueId: number;
+  content: string;
+}

@@ -9,6 +9,8 @@ export type Action =
   | { type: 'TOGGLE_ASSIGNEE'; payload: number }
   | { type: 'RESET_FORM' };
 
+export type Dispatch = React.Dispatch<Action>;
+
 export function newIssueFormReducer(
   state: NewIssueState,
   action: Action,

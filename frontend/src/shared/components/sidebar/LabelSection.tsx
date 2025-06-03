@@ -1,38 +1,53 @@
 import styled from '@emotion/styled';
+import { useEffect, useState } from 'react';
 import { useLabels } from '@/features/label/hooks/useLabels';
 import { type Label } from '@/features/label/types';
 import LabelBadgeList from '@/shared/components/LabelBadgeList';
 import Dropdown from '@/shared/components/Dropdown';
 import DropdownPanel from '@/shared/components/DropdownPanel';
+import { isSameIdArray } from '@/shared/utils/isEqual';
 
 interface LabelSectionProps {
-  selectedLabelIds: number[];
-  onToggleLabel: (id: number) => void;
+  initialSelectedIds: number[];
+  onSave: (ids: number[]) => void;
 }
 
 export default function LabelSection({
-  selectedLabelIds,
-  onToggleLabel,
+  initialSelectedIds,
+  onSave,
 }: LabelSectionProps) {
   const { labels } = useLabels();
+  const [selected, setSelected] = useState(initialSelectedIds);
+  const [isOpen, setIsOpen] = useState(false);
 
-  const LabelOptions = labels.map((label: Label) => ({
+  const toggleLabel = (id: number) => {
+    setSelected(prev =>
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id],
+    );
+  };
+
+  // 닫힐 때만 변경 사항이 있으면 onSave
+  useEffect(() => {
+    if (!isOpen && !isSameIdArray(selected, initialSelectedIds)) {
+      onSave(selected);
+    }
+  }, [isOpen]);
+
+  const labelOptions = labels.map((label: Label) => ({
     id: label.id,
     name: label.name,
     color: label.color,
-    selected: selectedLabelIds.includes(label.id),
+    selected: selected.includes(label.id),
   }));
 
-  const selectedLabels = labels.filter(label =>
-    selectedLabelIds.includes(label.id),
-  );
+  const selectedLabels = labels.filter(label => selected.includes(label.id));
 
   return (
     <Section>
-      <Dropdown label="레이블">
+      <Dropdown label="레이블" isOpen={isOpen} setIsOpen={setIsOpen}>
         <DropdownPanel<{ color: string }>
-          options={LabelOptions}
-          onSelect={onToggleLabel}
+          options={labelOptions}
+          onSelect={toggleLabel}
           renderOption={option => (
             <LabelInfo>
               <ColorDot style={{ backgroundColor: option.color }} />
@@ -41,7 +56,8 @@ export default function LabelSection({
           )}
         />
       </Dropdown>
-      {selectedLabelIds.length > 0 && (
+
+      {selected.length > 0 && (
         <LabelList>
           <LabelBadgeList labels={selectedLabels} />
         </LabelList>
@@ -50,7 +66,7 @@ export default function LabelSection({
   );
 }
 
-const Section = styled.div<{ noDivider?: boolean }>`
+const Section = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;

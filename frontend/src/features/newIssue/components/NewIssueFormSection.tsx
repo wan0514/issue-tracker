@@ -1,54 +1,37 @@
 import styled from '@emotion/styled';
+import { type NewIssueState } from '@/features/newIssue/types';
+import { type Dispatch } from '@/features/newIssue/reducers/newIssueFormReducer';
 import Profile from '@/shared/components/Profile';
 import IssueForm from '@/features/newIssue/components/NewIssueForm';
-import IssueSidebar from '@/shared/components/sidebar';
+import IssueCreateSidebar from '@/features/newIssue/components/IssueCreateSidebar';
 
 interface NewIssueFormSectionProps {
-  title: string;
-  onTitleChange: (value: string) => void;
-
-  content: string;
-  onContentChange: (value: string | ((prev: string) => string)) => void;
-
-  milestoneId: number | null;
-  onMilestoneChange: (id: number) => void;
-
-  selectedLabelIds: number[];
-  onToggleLabel: (id: number) => void;
-
-  selectedAssigneeIds: number[];
-  onToggleAssignee: (id: number) => void;
+  state: NewIssueState;
+  dispatch: Dispatch;
 }
 
 export default function NewIssueFormSection({
-  title,
-  onTitleChange,
-  content,
-  onContentChange,
-  milestoneId,
-  onMilestoneChange,
-  selectedLabelIds,
-  onToggleLabel,
-  selectedAssigneeIds,
-  onToggleAssignee,
+  state,
+  dispatch,
 }: NewIssueFormSectionProps) {
+  const handleTitleChange = (value: string) => {
+    dispatch({ type: 'SET_TITLE', payload: value });
+  };
+
+  const handleContentChange = (value: string | ((prev: string) => string)) => {
+    dispatch({ type: 'SET_CONTENT', payload: value });
+  };
+
   return (
     <MainWrapper>
       <Profile size="md" />
       <IssueForm
-        title={title}
-        content={content}
-        onTitleChange={onTitleChange}
-        onContentChange={onContentChange}
+        title={state.title}
+        content={state.content}
+        onTitleChange={handleTitleChange}
+        onContentChange={handleContentChange}
       />
-      <IssueSidebar
-        selectedAssigneeIds={selectedAssigneeIds}
-        onToggleAssignee={onToggleAssignee}
-        selectedLabelIds={selectedLabelIds}
-        onToggleLabel={onToggleLabel}
-        selectedMilestoneId={milestoneId}
-        onSelectMilestone={onMilestoneChange}
-      />
+      <IssueCreateSidebar state={state} dispatch={dispatch} />
     </MainWrapper>
   );
 }
