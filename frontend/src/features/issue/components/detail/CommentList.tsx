@@ -12,6 +12,7 @@ export default function CommentList({ comments }: CommentListProps) {
       {comments.map((comment: Comment) => (
         <CommentDescription
           key={comment.id}
+          commentId={comment.id}
           content={comment.content}
           author={comment.author}
           createdAt={comment.createdAt}

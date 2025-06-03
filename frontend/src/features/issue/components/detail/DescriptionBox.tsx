@@ -12,12 +12,14 @@ export interface DescriptionBoxProps {
   content: string | null;
   author: CommentAuthor;
   createdAt: string;
+  onSubmit: (value: string) => void;
 }
 
 export default function DescriptionBox({
   content,
   author,
   createdAt,
+  onSubmit,
 }: DescriptionBoxProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [description, setDescription] = useState(content || '');
@@ -27,7 +29,7 @@ export default function DescriptionBox({
   const isAuthor = currentUser?.nickname === author.nickname;
 
   const handleSubmit = () => {
-    // TODO: mutation 연결
+    onSubmit(description);
     setIsEditing(false);
   };
 
