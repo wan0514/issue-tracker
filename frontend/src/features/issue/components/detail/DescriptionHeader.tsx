@@ -60,7 +60,6 @@ const Container = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 16px 24px;
-  border: 1px solid ${({ theme }) => theme.neutral.surface.default};
 `;
 
 const LeftSection = styled.div`

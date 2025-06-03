@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { useState } from 'react';
 import { useCurrentUser } from '@/features/auth/hooks/useCurrentUser';
 import { type CommentAuthor } from '@/features/issue/types/issue';
+import Divider from '@/shared/components/Divider';
 import DescriptionHeader from '@/features/issue/components/detail/DescriptionHeader';
 import DescriptionBody from '@/features/issue/components/detail/DescriptionBody';
 import CommentInputSection from '@/features/newIssue/components/CommentInputSection';
@@ -43,6 +44,7 @@ export default function DescriptionBox({
           isAuthor={isAuthor}
           onEditClick={() => setIsEditing(true)}
         />
+        <Divider />
         {isEditing ? (
           <CommentInputSection
             value={description}

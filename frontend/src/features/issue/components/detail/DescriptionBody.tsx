@@ -20,7 +20,6 @@ export default function DescriptionBody({ content }: DescriptionBodyProps) {
 const StyledContent = styled.div`
   padding: 16px 24px 24px 24px;
   background-color: ${({ theme }) => theme.neutral.surface.strong};
-  border-top: 1px solid ${({ theme }) => theme.neutral.border.default};
   ${({ theme }) => theme.typography.displayMedium16};
   color: ${({ theme }) => theme.neutral.text.default};
 
