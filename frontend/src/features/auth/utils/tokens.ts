@@ -3,6 +3,10 @@ import { decodeAccessToken } from '@/shared/utils/decodeAccessToken';
 export const TOKEN_KEY = 'access_token';
 export const TOKEN_TYPE_KEY = 'token_type';
 
+const autoLogoutTimerRef: { current: number | null } = {
+  current: null,
+};
+
 export function setAccessToken(token: string, tokenType: string) {
   localStorage.setItem(TOKEN_KEY, token);
   localStorage.setItem(TOKEN_TYPE_KEY, tokenType);
@@ -36,6 +40,11 @@ export function isAccessTokenStillValid(): boolean {
 }
 
 export function setupAutoLogoutByExp(token: string) {
+  // 기존 타이머 제거 (중복 방지)
+  if (autoLogoutTimerRef.current !== null) {
+    clearTimeout(autoLogoutTimerRef.current);
+  }
+
   const decoded = decodeAccessToken(token);
   if (!decoded) return;
 
@@ -48,7 +57,7 @@ export function setupAutoLogoutByExp(token: string) {
     removeAccessToken();
     window.location.href = '/login';
   } else {
-    setTimeout(() => {
+    autoLogoutTimerRef.current = window.setTimeout(() => {
       removeAccessToken();
       window.location.href = '/login';
     }, remaining);

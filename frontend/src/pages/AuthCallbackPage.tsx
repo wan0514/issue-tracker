@@ -1,6 +1,9 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { setAccessToken } from '@/features/auth/utils/tokens';
+import {
+  setAccessToken,
+  setupAutoLogoutByExp,
+} from '@/features/auth/utils/tokens';
 
 export default function AuthCallbackPage() {
   const navigate = useNavigate();
@@ -12,6 +15,7 @@ export default function AuthCallbackPage() {
 
     if (token && tokenType) {
       setAccessToken(token, tokenType);
+      setupAutoLogoutByExp(token);
 
       window.history.replaceState(null, '', '/');
       navigate('/');
