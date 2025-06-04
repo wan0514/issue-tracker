@@ -1,6 +1,6 @@
 import type { Label } from '@/features/label/types';
 import type { User } from '@/features/user/types';
-
+import type { MilestoneShort } from '@/features/milestone/types';
 export type IssueStatus = 'open' | 'closed';
 
 export interface Issue {
@@ -58,4 +58,15 @@ export interface CommentsResponse {
 export interface PatchIssueContentParams {
   issueId: number;
   content: string;
+}
+
+export interface IssueQueryFilterState {
+  state?: IssueStatus;
+  labelIds: number[];
+  assigneeIds: number[];
+  authorId: number | null;
+  milestoneId: number | null;
+  users: User[];
+  labels: Label[];
+  milestones: MilestoneShort[];
 }

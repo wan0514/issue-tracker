@@ -1,4 +1,4 @@
-import { type IssueStatus } from '@/features/issue/types/issue';
+import { type IssueQueryFilterState } from '@/features/issue/types/issue';
 
 interface CreatedMessageParams {
   createdAt: string;
@@ -48,20 +48,73 @@ export function formatCreatedMessage({
   return `이 이슈가 ${timeString}에 ${author}님에 의해 ${statusText}`;
 }
 
-//TODO 필터 상태에 따라 확장
 /**
- * 이슈 상태 값을 기반으로 GitHub 스타일의 쿼리 문자열을 생성합니다.
- * 상태 값이 주어지지 않으면 기본적으로 모든 이슈를 의미하는 'is:issue'를 반환합니다.
+ * 필터 상태 객체를 기반으로 GitHub 스타일의 이슈 쿼리 문자열을 생성합니다.
+ * 쿼리 문자열은 'is:issue'로 시작하며, 선택된 상태, 라벨, 작성자, 담당자, 마일스톤 조건이 순차적으로 추가됩니다.
+ * 각 필드는 ID 기반으로 받아와 해당하는 name/title/nickname으로 변환되어 쿼리에 포함됩니다.
  *
- * @param {IssueStatus} [state] - 이슈의 상태값 ('open' 또는 'closed' 등). 선택값입니다.
- *                                상태가 없을 경우 기본 쿼리('is:issue')를 반환합니다.
- * @returns {string} 필터링 조건에 맞는 쿼리 문자열
+ * @param {IssueQueryFilterState} 필터 상태와 관련된 데이터 객체
+ *  - state: 이슈 상태(open 또는 closed)
+ *  - labelIds: 선택된 라벨 ID 목록
+ *  - assigneeIds: 선택된 담당자 ID 목록
+ *  - authorId: 선택된 작성자 ID (또는 null)
+ *  - milestoneId: 선택된 마일스톤 ID (또는 null)
+ *  - users: 사용자 목록 (id, nickname 포함)
+ *  - labels: 라벨 목록 (id, name 포함)
+ *  - milestones: 마일스톤 목록 (id, title 포함)
+ *
+ * @returns {string} 조합된 쿼리 문자열 (예: 'is:issue state:open label:"버그" author:sunwon')
  *
  * @example
- * buildIssueQuery(); // 'is:issue'
- * buildIssueQuery('open'); // 'is:issue state:open'
+ * buildIssueQueryFromFilter({
+ *   state: 'open',
+ *   labelIds: [1],
+ *   assigneeIds: [2],
+ *   authorId: 3,
+ *   milestoneId: 4,
+ *   users: [{ id: 2, nickname: 'sunwon' }, { id: 3, nickname: 'dev-angel' }],
+ *   labels: [{ id: 1, name: '버그' }],
+ *   milestones: [{ id: 4, title: '이번 주까지' }]
+ * });
+ * // 결과: 'is:issue state:open label:"버그" assignee:sunwon author:dev-angel milestone:"이번 주까지"'
  */
-export function buildIssueQuery(state?: IssueStatus): string {
-  if (!state) return 'is:issue';
-  return `is:issue state:${state}`;
+export function buildIssueQueryFromFilter({
+  state,
+  labelIds,
+  assigneeIds,
+  authorId,
+  milestoneId,
+  users,
+  labels,
+  milestones,
+}: IssueQueryFilterState): string {
+  const queries: string[] = ['is:issue'];
+
+  if (state) queries.push(`state:${state}`);
+
+  labelIds.forEach(id => {
+    const name = labels.find(l => l.id === id)?.name;
+    if (name) queries.push(`label:${wrap(name)}`);
+  });
+
+  assigneeIds.forEach(id => {
+    const nick = users.find(u => u.id === id)?.nickname;
+    if (nick) queries.push(`assignee:${wrap(nick)}`);
+  });
+
+  if (authorId !== null) {
+    const nick = users.find(u => u.id === authorId)?.nickname;
+    if (nick) queries.push(`author:${wrap(nick)}`);
+  }
+
+  if (milestoneId !== null) {
+    const title = milestones.find(m => m.id === milestoneId)?.title;
+    if (title) queries.push(`milestone:${wrap(title)}`);
+  }
+
+  return queries.join(' ');
+}
+
+function wrap(value: string): string {
+  return /\s/.test(value) ? `"${value}"` : value;
 }
