@@ -27,98 +27,6 @@ interface UpdateMilestoneRequest {
   description?: string;
 }
 
-interface MilestoneModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSubmit: (data: CreateMilestoneRequest) => Promise<void>;
-  initialData?: Milestone;
-}
-
-function MilestoneModal({ isOpen, onClose, onSubmit, initialData }: MilestoneModalProps) {
-  const [title, setTitle] = useState(initialData?.title || '');
-  const [description, setDescription] = useState(initialData?.description || '');
-  const [expiredAt, setExpiredAt] = useState(initialData?.expiredAt || '');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  useEffect(() => {
-    if (initialData) {
-      setTitle(initialData.title);
-      setDescription(initialData.description || '');
-      setExpiredAt(initialData.expiredAt || '');
-    }
-  }, [initialData]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!title.trim()) return;
-
-    setIsSubmitting(true);
-    try {
-      const milestoneData: CreateMilestoneRequest = {
-        title: title.trim(),
-        ...(description.trim() && { description: description.trim() }),
-        ...(expiredAt && { expiredAt }),
-      };
-      await onSubmit(milestoneData);
-      onClose();
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  if (!isOpen) return null;
-
-  return (
-    <ModalOverlay onClick={onClose}>
-      <ModalContent onClick={(e) => e.stopPropagation()}>
-        <ModalHeader>
-          <ModalTitle>{initialData ? '마일스톤 수정' : '새로운 마일스톤'}</ModalTitle>
-          <CloseButton onClick={onClose}>&times;</CloseButton>
-        </ModalHeader>
-        <form onSubmit={handleSubmit}>
-          <FormGroup>
-            <Label htmlFor="title">제목 *</Label>
-            <Input
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="마일스톤 제목"
-              required
-            />
-          </FormGroup>
-          <FormGroup>
-            <Label htmlFor="description">설명</Label>
-            <TextArea
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="마일스톤 설명"
-              rows={4}
-            />
-          </FormGroup>
-          <FormGroup>
-            <Label htmlFor="expiredAt">완료일</Label>
-            <Input
-              id="expiredAt"
-              type="date"
-              value={expiredAt}
-              onChange={(e) => setExpiredAt(e.target.value)}
-            />
-          </FormGroup>
-          <ButtonGroup>
-            <CancelButton type="button" onClick={onClose}>
-              취소
-            </CancelButton>
-            <SubmitButton type="submit" disabled={isSubmitting}>
-              {isSubmitting ? '처리 중...' : initialData ? '수정' : '생성'}
-            </SubmitButton>
-          </ButtonGroup>
-        </form>
-      </ModalContent>
-    </ModalOverlay>
-  );
-}
-
 export default function MilestonesPage() {
   const [milestones, setMilestones] = useState<Milestone[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -271,7 +179,7 @@ export default function MilestonesPage() {
     setFormData({ title: '', description: '', expiredAt: '' });
   };
 
-  const filteredMilestones = milestones.filter(milestone => 
+  const filteredMilestones = milestones.filter(milestone =>
     filter === 'open' ? !milestone.isClosed : milestone.isClosed
   );
 
@@ -312,7 +220,7 @@ export default function MilestonesPage() {
             닫힌 마일스톤 ({closedMilestonesCount})
           </FilterButton>
         </FilterContainer>
-        
+
         <MilestoneList>
           {mode === 'create' && (
             <FormContainer>
@@ -441,10 +349,10 @@ export default function MilestonesPage() {
                         {milestone.expiredAt && (
                           <DueDate>
                             완료일: {new Date(milestone.expiredAt).toLocaleDateString('ko-KR', {
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric'
-                            })}
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          })}
                           </DueDate>
                         )}
                       </MilestoneMeta>
@@ -637,55 +545,6 @@ const ErrorMessage = styled.div`
   color: #d73a49;
 `;
 
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: ${({ theme }) => theme.neutral.surface.strong}CC;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-`;
-
-const ModalContent = styled.div`
-  background-color: ${({ theme }) => theme.neutral.surface.default};
-  border-radius: ${({ theme }) => theme.radius.large};
-  padding: 32px;
-  width: 100%;
-  max-width: 500px;
-  box-shadow: 0 4px 12px ${({ theme }) => theme.neutral.surface.strong};
-`;
-
-const ModalHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-`;
-
-const ModalTitle = styled.h2`
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin: 0;
-  color: ${({ theme }) => theme.neutral.text.strong};
-`;
-
-const CloseButton = styled.button`
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: ${({ theme }) => theme.neutral.text.weak};
-  padding: 0.5rem;
-  line-height: 1;
-
-  &:hover {
-    color: ${({ theme }) => theme.neutral.text.strong};
-  }
-`;
 
 const FormGroup = styled.div`
   margin-bottom: 24px;
