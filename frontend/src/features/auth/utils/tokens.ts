@@ -1,14 +1,11 @@
+import { decodeAccessToken } from '@/shared/utils/decodeAccessToken';
+
 export const TOKEN_KEY = 'access_token';
 export const TOKEN_TYPE_KEY = 'token_type';
-export const ISSUED_AT_KEY = 'access_token_issued_at';
-export const TOKEN_LIFETIME = 30 * 60 * 1000; // 30분(ms)
 
 export function setAccessToken(token: string, tokenType: string) {
   localStorage.setItem(TOKEN_KEY, token);
   localStorage.setItem(TOKEN_TYPE_KEY, tokenType);
-  localStorage.setItem(ISSUED_AT_KEY, Date.now().toString());
-
-  setupAutoLogout();
 }
 
 export function getAccessTokenPair(): {
@@ -24,23 +21,28 @@ export function getAccessTokenPair(): {
 export function removeAccessToken() {
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(TOKEN_TYPE_KEY);
-  localStorage.removeItem(ISSUED_AT_KEY);
 }
 
 export function isAccessTokenStillValid(): boolean {
-  const issuedAt = localStorage.getItem(ISSUED_AT_KEY);
-  if (!issuedAt) return false;
+  const token = localStorage.getItem(TOKEN_KEY);
+  if (!token) return false;
 
-  const elapsed = Date.now() - parseInt(issuedAt, 10);
-  return elapsed < TOKEN_LIFETIME;
+  const decoded = decodeAccessToken(token);
+  if (!decoded || !decoded.exp) return false;
+
+  const now = Date.now();
+  const expirationTime = decoded.exp * 1000;
+  return now < expirationTime;
 }
 
-export function setupAutoLogout() {
-  const issuedAt = localStorage.getItem(ISSUED_AT_KEY);
-  if (!issuedAt) return;
+export function setupAutoLogoutByExp(token: string) {
+  const decoded = decodeAccessToken(token);
+  if (!decoded) return;
 
-  const elapsed = Date.now() - parseInt(issuedAt, 10);
-  const remaining = TOKEN_LIFETIME - elapsed;
+  const { exp } = decoded;
+  const now = Date.now();
+  const expirationTime = exp * 1000;
+  const remaining = expirationTime - now;
 
   if (remaining <= 0) {
     removeAccessToken();
