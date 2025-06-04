@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styled from '@emotion/styled';
+import { useQueryClient } from '@tanstack/react-query';
 import usePatchIssueTitle from '@/features/issue/hooks/usePatchIssueTitle';
 import usePatchIssueState from '@/features/issue/hooks/usePatchIssueState';
 import IssueMeta from './IssueMeta';
@@ -27,6 +28,7 @@ export default function IssueHeader({
   createdAt,
   commentCount,
 }: IssueHeaderProps) {
+  const queryClient = useQueryClient();
   const { mutate: patchTitle } = usePatchIssueTitle(issueId);
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(title);
@@ -38,7 +40,17 @@ export default function IssueHeader({
 
   const handleToggle = () => {
     if (isToggleLoading) return;
-    toggleIssueState({ issueId, targetClosed: !isClosed });
+
+    toggleIssueState(
+      { issueId, targetClosed: !isClosed },
+      {
+        onSuccess: () => {
+          // 이슈가 성공적으로 닫힌 후 마일스톤 정보를 다시 불러옴
+          queryClient.invalidateQueries({ queryKey: ['milestones'] });
+          // 또는 queryClient.invalidateQueries(['milestone', milestoneId]);
+        },
+      },
+    );
   };
 
   const handleSubmitEdit = () => {

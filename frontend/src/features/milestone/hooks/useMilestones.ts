@@ -7,7 +7,6 @@ export default function useMilestones() {
     {
       queryKey: ['milestones'],
       queryFn: getMilestones,
-      staleTime: 1000 * 60 * 1,
     },
   );
 
