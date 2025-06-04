@@ -7,7 +7,7 @@ export function useLabels() {
     useQuery<GetLabelsResponse>({
       queryKey: ['labels'],
       queryFn: getLabels,
-      placeholderData: keepPreviousData,
+      // placeholderData: keepPreviousData,
     });
 
   return {
