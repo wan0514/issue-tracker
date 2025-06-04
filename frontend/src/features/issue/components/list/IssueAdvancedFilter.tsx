@@ -4,13 +4,11 @@ import SearchIcon from '@/assets/icons/search.svg?react';
 
 interface IssueAdvancedFilterProps {
   searchValue: string;
-  onSearchChange: (value: string) => void;
   placeholder?: string;
 }
 
 export default function IssueAdvancedFilter({
   searchValue,
-  onSearchChange,
   placeholder = 'placeholder',
 }: IssueAdvancedFilterProps) {
   return (
@@ -21,11 +19,7 @@ export default function IssueAdvancedFilter({
 
       <SearchArea>
         <SearchIcon width={16} height={16} />
-        <SearchInput
-          value={searchValue}
-          onChange={e => onSearchChange(e.target.value)}
-          placeholder={placeholder}
-        />
+        <SearchInput value={searchValue} readOnly placeholder={placeholder} />
       </SearchArea>
     </FilterWrapper>
   );

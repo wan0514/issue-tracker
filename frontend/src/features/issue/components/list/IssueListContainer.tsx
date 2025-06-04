@@ -1,20 +1,20 @@
 import styled from '@emotion/styled';
 import { type IssueStatus } from '@/features/issue/types/issue';
 import useIssues from '@/features/issue/hooks/useIssues';
-import { buildIssueQuery } from '@/features/issue/utils';
 import IssueListHeader from '@/features/issue/components/list/IssueListHeader';
 import IssueListContent from '@/features/issue/components/list/IssueListContent';
 
 interface IssueListContainerProps {
   selected: IssueStatus;
   onChangeTab: (status: IssueStatus) => void;
+  query: string;
 }
 
 export default function IssueListContainer({
   selected,
   onChangeTab,
+  query,
 }: IssueListContainerProps) {
-  const query = buildIssueQuery(selected);
   const { data, isFetching, isError, error } = useIssues(query);
 
   const displayIssues = data?.issues ?? [];

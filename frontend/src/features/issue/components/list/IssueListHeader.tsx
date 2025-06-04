@@ -1,6 +1,9 @@
 import styled from '@emotion/styled';
 import IssueTabFilter from '@/features/issue/components/list/IssueTabFilter';
-import ChevronDownIcon from '@/assets/icons/chevronDown.svg?react';
+import AssigneeDropdown from './filters/AssigneeDropdown';
+import AuthorDropdown from './filters/AuthorDropdown';
+import LabelDropdown from './filters/LabelDropdown';
+import MilestoneDropdown from './filters/MilestoneDropdown';
 
 interface ListHeaderProps {
   openCount: number;
@@ -30,10 +33,10 @@ export default function IssueListHeader({
       </LeftSection>
 
       <RightSection>
-        <DropdownIndicator label="담당자" />
-        <DropdownIndicator label="레이블" />
-        <DropdownIndicator label="마일스톤" />
-        <DropdownIndicator label="작성자" />
+        <AssigneeDropdown />
+        <LabelDropdown />
+        <MilestoneDropdown />
+        <AuthorDropdown />
       </RightSection>
     </HeaderWrapper>
   );
@@ -68,29 +71,4 @@ const Checkbox = styled.input`
   width: 16px;
   height: 32px;
   cursor: pointer;
-`;
-
-//TODO 공통 컴포넌트로 분리
-function DropdownIndicator({ label }: { label: string }) {
-  return (
-    <IndicatorWrapper>
-      <IndicatorLabel>{label}</IndicatorLabel>
-      <ChevronDownIcon width={16} height={16} />
-    </IndicatorWrapper>
-  );
-}
-
-const IndicatorWrapper = styled.div`
-  display: inline-flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 4px;
-  min-width: 80px;
-
-  cursor: pointer;
-`;
-
-const IndicatorLabel = styled.span`
-  white-space: nowrap;
-  ${({ theme }) => theme.typography.availableMedium16};
 `;
