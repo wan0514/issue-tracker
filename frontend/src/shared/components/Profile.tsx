@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { css, useTheme } from '@emotion/react';
 
 interface ProfileProps {
-  id?: number;
+  id?: number | string;
   size?: 'md' | 'sm';
   name?: string;
   imageUrl?: string;

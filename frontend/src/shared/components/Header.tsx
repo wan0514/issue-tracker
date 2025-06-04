@@ -1,10 +1,13 @@
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
+import { useCurrentUser } from '@/features/auth/hooks/useCurrentUser';
 import Profile from '@/shared/components/Profile';
 import Logo from '@/assets/logoMedium.svg?react';
 import DarkModeToggle from '@/shared/components/DarkModeToggle';
 
 export default function Header() {
+  const user = useCurrentUser();
+
   return (
     <Wrapper>
       <LeftSection>
@@ -13,8 +16,7 @@ export default function Header() {
         </Link>
         <DarkModeToggle />
       </LeftSection>
-      {/* 로그인 기능 구현시 유저 정보(이미지,id등) 전달 */}
-      <Profile size="md" />
+      {user && <Profile id={user.nickname} imageUrl={user.profileImageUrl} />}
     </Wrapper>
   );
 }
