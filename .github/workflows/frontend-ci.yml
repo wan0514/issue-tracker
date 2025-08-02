@@ -37,6 +37,9 @@ jobs:
       - name: Build Frontend for Production
         run: npm run build
 
+      - name: Check 'dist' directory contents # 디버깅용 임시 단계
+        run: ls -la dist
+
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
