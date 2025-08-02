@@ -72,8 +72,6 @@ jobs:
 
       - name: Deploy to S3
         run: aws s3 sync ./dist/ s3://my-issue-tracker-frontend-deploy --delete
-        working-directory: frontend
 
       - name: Invalidate CloudFront Cache
         run: aws cloudfront create-invalidation --distribution-id E37GGRU4ST94MH --paths "/*"
-        working-directory: frontend
