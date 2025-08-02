@@ -41,7 +41,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: frontend-build-artifact
-          path: frontend/dist
+          path: dist
 
   # CD(배포)를 담당하는 두 번째 잡
   cd:
@@ -53,12 +53,16 @@ jobs:
     # 배포는 dev 브랜치에 push될 때만 실행
     if: github.event_name == 'push' && github.ref == 'refs/heads/dev' || github.event_name == 'workflow_dispatch'
 
+    defaults:
+      run:
+        working-directory: frontend
+
     steps:
       - name: Download Build Artifact
         uses: actions/download-artifact@v4
         with:
           name: frontend-build-artifact
-          path: frontend/dist
+          path: dist
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
