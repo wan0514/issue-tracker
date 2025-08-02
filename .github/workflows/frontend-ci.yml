@@ -5,7 +5,8 @@ on:
     branches:
       - fe
     paths:
-      - 'frontend/**'
+      - "frontend/**"
+  workflow_dispatch:
 
 jobs:
   frontend-test:
