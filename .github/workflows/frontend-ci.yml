@@ -56,10 +56,6 @@ jobs:
     # 배포는 dev 브랜치에 push될 때만 실행
     if: github.event_name == 'push' && github.ref == 'refs/heads/dev' || github.event_name == 'workflow_dispatch'
 
-    defaults:
-      run:
-        working-directory: frontend
-
     steps:
       - name: Download Build Artifact
         uses: actions/download-artifact@v4
@@ -76,6 +72,8 @@ jobs:
 
       - name: Deploy to S3
         run: aws s3 sync ./dist/ s3://my-issue-tracker-frontend-deploy --delete
+        working-directory: frontend
 
       - name: Invalidate CloudFront Cache
         run: aws cloudfront create-invalidation --distribution-id E37GGRU4ST94MH --paths "/*"
+        working-directory: frontend
