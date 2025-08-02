@@ -51,7 +51,7 @@ jobs:
     needs: ci
 
     # 배포는 dev 브랜치에 push될 때만 실행
-    if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/dev' || github.event_name == 'workflow_dispatch'
 
     steps:
       - name: Download Build Artifact
