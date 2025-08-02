@@ -1,31 +1,73 @@
-name: Frontend CI
+name: Two-stage Frontend CI/CD
 
+# 워크플로우 실행 조건 정의
 on:
-  pull_request:
+  push:
     branches:
-      - fe
+      - fe # fe 브랜치에 푸시될 때 (테스트만 실행)
+      - dev # dev 브랜치에 푸시될 때 (테스트 후 배포까지)
     paths:
       - "frontend/**"
   workflow_dispatch:
 
 jobs:
-  frontend-test:
+  # CI(테스트)를 담당하는 첫 번째 잡
+  ci:
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: frontend
-
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: npm ci
+        working-directory: frontend
 
       - name: Run Tests
         run: npm test
+        working-directory: frontend
+
+      - name: Build Frontend for Production
+        run: npm run build
+        working-directory: frontend
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build-artifact
+          path: frontend/dist
+
+  # CD(배포)를 담당하는 두 번째 잡
+  cd:
+    runs-on: ubuntu-latest
+
+    # ci 잡이 성공해야만 이 잡을 실행
+    needs: ci
+
+    # 배포는 dev 브랜치에 push될 때만 실행
+    if: github.event_name == 'push' && github.ref == 'refs/heads/dev' || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-build-artifact
+          path: dist
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: Deploy to S3
+        run: aws s3 sync ./dist/ s3://my-issue-tracker-frontend-deploy --delete
+
+      - name: Invalidate CloudFront Cache
+        run: aws cloudfront create-invalidation --distribution-id E37GGRU4ST94MH --paths "/*"
