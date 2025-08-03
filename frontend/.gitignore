@@ -17,6 +17,9 @@ dist-ssr
 .env
 .env.*
 
+# 번들 분석 결과 제외
+stats.html
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
