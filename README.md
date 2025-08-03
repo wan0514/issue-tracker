@@ -48,7 +48,7 @@
 
 - **문제**: S3 정적 호스팅 환경에서 직접 경로 접근 시 404 발생
 - **해결**: `CloudFront Function`으로 모든 요청 경로를 검사하고 확장자 없는 경로를 `index.html`로 rewrite  
-- 🔗 [문제 해결 상세 보기](https://www.notion.so/wan0514/cloudfront-routing)
+- 🔗 [문제 해결 상세 보기](https://coconut-ferret-aac.notion.site/24402717a647802e956ac7193db5c428?source=copy_link)
 
 ---
 
@@ -80,4 +80,4 @@
 - 재사용성과 일관성 향상을 위해 핵심 UI 요소를 공통 컴포넌트로 분리 설계
 - Button, Dropdown, Profile, Badge 등은 상태, 사이즈, 변형 타입을 prop으로 제어 가능하게 구현
 - 추상화 수준을 조절하여 유지보수성과 확장성을 모두 고려함
-- 🔗 [드롭다운 컴포넌트 설계 및 구현기](https://github.com/wan0514/issue-tracker/blob/dev/.github/workflows/frontend-ci.yml)
+- 🔗 [드롭다운 컴포넌트 설계 및 구현기](https://coconut-ferret-aac.notion.site/24402717a64780189805d3f170a708a3?source=copy_link)
