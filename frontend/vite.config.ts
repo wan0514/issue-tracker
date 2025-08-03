@@ -39,4 +39,15 @@ export default defineConfig({
       exclude: ['src/test/setupTests.ts'],
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ['react', 'react-dom'],
+          tanstack: ['@tanstack/react-query'],
+          markdown: ['react-markdown'],
+        },
+      },
+    },
+  },
 });
