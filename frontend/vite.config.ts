@@ -2,9 +2,19 @@ import { defineConfig } from 'vitest/config';
 import path from 'path';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig({
-  plugins: [react(), svgr()],
+  plugins: [
+    react(),
+    svgr(),
+    visualizer({
+      filename: 'stats.html',
+      open: true,
+      gzipSize: true,
+      brotliSize: true,
+    }),
+  ],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
@@ -27,6 +37,17 @@ export default defineConfig({
     coverage: {
       reporter: ['text', 'lcov'],
       exclude: ['src/test/setupTests.ts'],
+    },
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ['react', 'react-dom'],
+          tanstack: ['@tanstack/react-query'],
+          markdown: ['react-markdown'],
+        },
+      },
     },
   },
 });
