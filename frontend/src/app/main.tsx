@@ -1,6 +1,5 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import {
   QueryClient,
   QueryClientProvider,
@@ -9,6 +8,10 @@ import {
 import { isUnauthorized } from '@/shared/utils/isUnauthorized';
 import { removeAccessToken } from '@/features/auth/utils/tokens';
 import App from '@/app/App';
+
+const ReactQueryDevtools = import.meta.env.DEV
+  ? (await import('@tanstack/react-query-devtools')).ReactQueryDevtools
+  : () => null;
 
 const queryClient = new QueryClient({
   queryCache: new QueryCache({
@@ -25,7 +28,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <App />
-      <ReactQueryDevtools initialIsOpen={false} />
+      {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
     </QueryClientProvider>
   </StrictMode>,
 );
