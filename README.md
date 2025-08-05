@@ -61,7 +61,7 @@
   - `vite.config.ts`에서 `manualChunks`로 vendor 청크 분리
   - 사용하지 않는 mock JSON은 `public` 밖으로 이동해 번들 제외
 - **결과**: 렌더링 기준 번들 크기 **1.46MB → 856KB**, 약 **41.4% 감소**
-- 🔗 [최적화 상세 보기 + 시각화 비교 자료](https://www.notion.so/24402717a6478009a54aebed97cdf4dc)
+- 🔗 [최적화 상세 보기 + 시각화 비교 자료](https://coconut-ferret-aac.notion.site/24402717a6478009a54aebed97cdf4dc)
 
 ---
 
